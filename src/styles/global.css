@@ -1,0 +1,213 @@
+@import "@fontsource-variable/sofia-sans";
+@import "@fontsource-variable/red-hat-mono";
+
+/* Same ground and accent as the app: near-black greys, indigo for what you press. */
+:root {
+  --canvas: #0c0c0e;
+  --sunk: #08080a;
+  --raised: #141418;
+  --line: #24242a;
+  --line-strong: #3a3a42;
+  --fg: #f4f4f5;
+  --muted: #a1a1aa;
+  --faint: #8b8b95;
+  --accent: #8b8ff9;
+  --accent-fill: #5b5ef0;
+  --accent-fill-hover: #6b6ef4;
+
+  --requested: #e8c35a;
+  --wanted: #60a5fa;
+  --working: #e59af5;
+  --available: #4ade80;
+
+  --sans: "Sofia Sans Variable", ui-sans-serif, system-ui, sans-serif;
+  --mono: "Red Hat Mono Variable", ui-monospace, monospace;
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+
+  --gutter: clamp(1rem, 4vw, 2rem);
+  --page: 70rem;
+
+  color-scheme: dark;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--canvas);
+  color: var(--fg);
+  font-family: var(--sans);
+  font-size: 100%;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  scrollbar-color: var(--line-strong) var(--canvas);
+  scroll-padding-top: 5.5rem;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+body {
+  margin: 0;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  background: var(--canvas);
+  caret-color: var(--accent);
+}
+
+main {
+  flex: 1;
+}
+
+::selection {
+  background: var(--accent-fill);
+  color: #fff;
+}
+
+h1,
+h2,
+h3 {
+  margin: 0;
+  line-height: 1.1;
+  text-wrap: balance;
+}
+
+p {
+  margin: 0;
+  text-wrap: pretty;
+}
+
+a {
+  color: var(--accent);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+}
+
+a:hover {
+  color: var(--fg);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+code,
+kbd,
+pre {
+  font-family: var(--mono);
+  font-size: 0.9em;
+}
+
+:not(pre) > code {
+  padding: 0.1em 0.35em;
+  border-radius: 5px;
+  background: var(--raised);
+  border: 1px solid var(--line);
+  white-space: nowrap;
+}
+
+pre {
+  margin: 0;
+  padding: 1rem 1.15rem;
+  overflow-x: auto;
+  background: var(--sunk);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  line-height: 1.55;
+  font-size: 0.875rem;
+  color: #d4d4d8;
+}
+
+pre .c {
+  color: var(--faint);
+}
+
+.wrap {
+  width: min(var(--page), 100% - 2 * var(--gutter));
+  margin-inline: auto;
+}
+
+.skip {
+  position: absolute;
+  left: var(--gutter);
+  top: -3rem;
+  padding: 0.5rem 0.75rem;
+  background: var(--accent-fill);
+  color: #fff;
+  border-radius: 8px;
+  z-index: 10;
+}
+
+.skip:focus {
+  top: 0.75rem;
+}
+
+/* Buttons */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 2.75rem;
+  padding: 0 1.1rem;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 0.975rem;
+  text-decoration: none;
+  white-space: nowrap;
+  transition:
+    background-color 0.2s var(--ease),
+    border-color 0.2s var(--ease),
+    color 0.2s var(--ease);
+}
+
+.btn svg {
+  width: 1.05rem;
+  height: 1.05rem;
+  flex: none;
+}
+
+.btn-primary {
+  background: var(--accent-fill);
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background: var(--accent-fill-hover);
+  color: #fff;
+}
+
+.btn-quiet {
+  border: 1px solid var(--line-strong);
+  color: var(--fg);
+}
+
+.btn-quiet:hover {
+  background: var(--raised);
+  border-color: #4a4a54;
+  color: var(--fg);
+}
+
+.btn-small {
+  min-height: 2.25rem;
+  padding: 0 0.8rem;
+  font-size: 0.9rem;
+  border-radius: 8px;
+}
+
+.dot {
+  display: inline-block;
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 50%;
+  flex: none;
+}

@@ -1,0 +1,448 @@
+---
+import Base from "../layouts/Base.astro";
+import { ISSUES, REPO } from "../consts";
+
+const toc = [
+  ["before", "Before you start"],
+  ["docker", "Install with Docker"],
+  ["source", "Run from source"],
+  ["first-run", "First run"],
+  ["connect", "Connect your services"],
+  ["folders", "Folders and hardlinks"],
+  ["playback", "Playback"],
+  ["config", "Configuration"],
+  ["backups", "Backups and updates"],
+  ["help", "Getting help"],
+];
+
+const env = [
+  ["MOKA_CONFIG_DIR", "./config", "Database, caches and the secret key. /config in Docker."],
+  ["MOKA_PORT", "8484", "Port for the web app and the API."],
+  ["MOKA_HOST", "0.0.0.0", "Address to listen on."],
+  ["MOKA_DATABASE_URL", "SQLite in the config folder", "Only if you want the database somewhere else."],
+  ["MOKA_SECRET_KEY", "secret.key in the config folder", "Base64, 32 bytes. Encrypts stored passwords and API keys."],
+];
+---
+
+<Base
+  title="Docs · Moka"
+  description="Install Moka with Docker or from source, connect your download client, indexers and library, and set it up next to the apps you already run."
+  page="docs"
+>
+  <div class="wrap docs">
+    <aside class="toc" aria-label="On this page">
+      <p class="toc-title">On this page</p>
+      <ol>{toc.map(([id, label]) => <li><a href={`#${id}`}>{label}</a></li>)}</ol>
+    </aside>
+
+    <article class="doc">
+      <header class="doc-head">
+        <h1>Docs</h1>
+        <p>
+          How to install Moka, connect it to your services and keep it running. This page follows the code on the
+          <code>main</code> branch.
+        </p>
+      </header>
+
+      <section id="before">
+        <h2>Before you start</h2>
+        <p class="note">
+          <span class="dot" aria-hidden="true"></span>
+          <span>
+            Moka is a development preview. There are no releases yet, and settings or the database can change between
+            commits. Point it at a copy of your media, or at folders you can afford to have reorganised.
+          </span>
+        </p>
+        <p>You will need:</p>
+        <ul>
+          <li>A machine that stays on: a NAS, a mini PC, a home server. Docker makes it easiest.</li>
+          <li>A download client: qBittorrent or Transmission for torrents, SABnzbd for Usenet.</li>
+          <li>One or more Torznab or Newznab indexers, added directly or through Prowlarr.</li>
+          <li>Folders for your downloads and your library, ideally on the same disk.</li>
+        </ul>
+        <p>Moka ships with no content sources. What it can find depends entirely on what you connect.</p>
+      </section>
+
+      <section id="docker">
+        <h2>Install with Docker</h2>
+        <p>There is no published image yet, so you build it from the repository. The build takes a few minutes.</p>
+        <pre><code>git clone {REPO}.git
+cd Moka
+cp docker-compose.example.yml docker-compose.yml
+<span class="c"># set your media folder under volumes, then:</span>
+docker compose up -d --build</code></pre>
+        <p>The example mounts two folders:</p>
+        <ul>
+          <li><code>./config</code> as <code>/config</code>: the database, caches and the secret key.</li>
+          <li>
+            Your media folder as <code>/data</code>, holding both downloads and the library (see
+            <a href="#folders">Folders and hardlinks</a>).
+          </li>
+        </ul>
+        <p>Then open <code>http://your-server:8484</code>.</p>
+      </section>
+
+      <section id="source">
+        <h2>Run from source</h2>
+        <p>
+          You need Rust (stable), Node.js 22 or newer with pnpm, and FFmpeg for playback. The web app is built into the
+          server binary, so build it first.
+        </p>
+        <pre><code>pnpm --dir web install
+pnpm --dir web build
+cargo run --release -p moka-server</code></pre>
+        <p>Moka listens on <code>http://localhost:8484</code> and keeps its data in <code>./config</code>.</p>
+      </section>
+
+      <section id="first-run">
+        <h2>First run</h2>
+        <p>
+          On the first visit Moka asks you to create an account. That first account is the admin. Moka starts empty, so
+          the catalog works right away but nothing can be downloaded until you connect your services.
+        </p>
+        <p>
+          Add people for your household or friends under <strong>Settings → People</strong>, and choose what each one
+          may do: request, have requests approved automatically, manage requests or manage the library.
+          <strong>Settings → Request limit</strong> caps how much each person can request in a period.
+        </p>
+      </section>
+
+      <section id="connect">
+        <h2>Connect your services</h2>
+        <dl class="steps">
+          <div>
+            <dt>Download client</dt>
+            <dd>
+              <strong>Connections → Download clients.</strong> Add qBittorrent, Transmission or SABnzbd with its address
+              and login. Moka adds its downloads under their own category, <code>moka</code> by default.
+            </dd>
+          </div>
+          <div>
+            <dt>Indexers</dt>
+            <dd>
+              <strong>Connections → Indexers.</strong> Paste a Torznab or Newznab address with its API key, or import
+              every indexer you already have in Prowlarr at once. Moka searches all of them together.
+            </dd>
+          </div>
+          <div>
+            <dt>Library</dt>
+            <dd>
+              <strong>Settings → Library.</strong> Choose a films folder and a shows folder. If they already hold
+              titles, scan them and Moka brings them in as they are.
+            </dd>
+          </div>
+          <div>
+            <dt>Quality</dt>
+            <dd>
+              <strong>Settings → Quality.</strong> List the releases you accept, best first. Moka downloads the first
+              acceptable one it finds and upgrades it until it reaches the point where you told it to stop.
+            </dd>
+          </div>
+          <div>
+            <dt>Jellyfin</dt>
+            <dd>
+              <strong>Connections → Jellyfin.</strong> Moka tells Jellyfin about new files right after import and brings
+              back what people watched there. If the two see your media under different paths, map one to the other.
+            </dd>
+          </div>
+          <div>
+            <dt>Radarr</dt>
+            <dd>
+              <strong>Connections → Radarr.</strong> Let Radarr do the searching and downloading: approved film requests
+              go to Radarr, and every film it has appears in Moka to watch.
+            </dd>
+          </div>
+          <div>
+            <dt>Other apps</dt>
+            <dd>
+              <strong>Connections → API keys.</strong> Apps that talk to Radarr or Sonarr, such as indexer managers,
+              request apps and subtitle apps, can use Moka's address with a key from here.
+              <strong>Connections → Notifications</strong> tells Discord or any service that accepts JSON when
+              something is requested, ready or stuck, and calls a subtitle app's webhook after each import.
+            </dd>
+          </div>
+        </dl>
+      </section>
+
+      <section id="folders">
+        <h2>Folders and hardlinks</h2>
+        <p>
+          Keep downloads and the library on the same disk, and in Docker inside the same mount. Then an import is a
+          hardlink: instant, and it takes no extra space while the download keeps seeding. Across disks Moka copies
+          instead. It never moves or deletes the downloaded file.
+        </p>
+        <pre><code>/srv/media/
+  downloads/   <span class="c"># your download client saves here</span>
+  movies/      <span class="c"># films folder in Settings → Library</span>
+  shows/       <span class="c"># shows folder in Settings → Library</span></code></pre>
+        <p>
+          Films are filed as <code>Title (Year) {"{tmdb-ID}"}</code> and shows as
+          <code>Show (Year) {"{tmdb-ID}"}/Season 01</code>, names other media servers read without trouble.
+        </p>
+      </section>
+
+      <section id="playback">
+        <h2>Playback</h2>
+        <p>
+          Files the browser can play are sent as they are. Others are repackaged or converted on the fly with FFmpeg.
+          Subtitles inside the file or next to it are picked up, styled ones included.
+        </p>
+        <p>
+          Conversion is faster on a graphics card. Pick it under <strong>Settings → Playback</strong>: NVIDIA (NVENC),
+          Intel or AMD on Linux (VAAPI), or Intel Quick Sync. If the card fails, Moka falls back to the processor. In
+          Docker the card has to be passed to the container; the compose example shows how for each kind.
+        </p>
+      </section>
+
+      <section id="config">
+        <h2>Configuration</h2>
+        <p>Everything else is set in the web app. These environment variables cover what has to be known at start:</p>
+        <div class="table">
+          <table>
+            <thead>
+              <tr><th scope="col">Variable</th><th scope="col">Default</th><th scope="col">What it does</th></tr>
+            </thead>
+            <tbody>
+              {
+                env.map(([name, def, what]) => (
+                  <tr>
+                    <td><code>{name}</code></td>
+                    <td>{def}</td>
+                    <td>{what}</td>
+                  </tr>
+                ))
+              }
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="backups">
+        <h2>Backups and updates</h2>
+        <p>
+          Back up the config folder, and keep <code>moka.db</code> and <code>secret.key</code> together. Without the key,
+          stored indexer keys and passwords cannot be read and have to be entered again.
+        </p>
+        <p>To update a Docker install, pull and rebuild:</p>
+        <pre><code>git pull
+docker compose up -d --build</code></pre>
+        <p>Moka upgrades its database on start and keeps a copy of the previous one next to it.</p>
+      </section>
+
+      <section id="help">
+        <h2>Getting help</h2>
+        <p>
+          Questions, ideas and bug reports go to the <a href={ISSUES}>issues on GitHub</a>. Say what you tried, what you
+          expected and what happened; real setups help more than anything else right now.
+        </p>
+        <p>
+          Found a security problem? Please do not open a public issue. Use <strong>Security → Report a vulnerability</strong>
+          on the <a href={REPO}>repository</a>.
+        </p>
+      </section>
+    </article>
+  </div>
+</Base>
+
+<style>
+  .docs {
+    display: grid;
+    gap: 2rem 4rem;
+    padding-top: clamp(2.5rem, 6vw, 4rem);
+  }
+
+  @media (min-width: 60rem) {
+    .docs {
+      grid-template-columns: 13rem minmax(0, 1fr);
+    }
+
+    .toc {
+      position: sticky;
+      top: 6rem;
+      align-self: start;
+    }
+  }
+
+  .toc-title {
+    font-size: 0.85rem;
+    font-weight: 650;
+    color: var(--faint);
+    margin-bottom: 0.6rem;
+  }
+
+  .toc ol {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.1rem;
+    border-left: 1px solid var(--line);
+  }
+
+  .toc a {
+    display: block;
+    padding: 0.3rem 0 0.3rem 0.9rem;
+    margin-left: -1px;
+    border-left: 1px solid transparent;
+    color: var(--muted);
+    font-size: 0.925rem;
+    text-decoration: none;
+  }
+
+  .toc a:hover {
+    color: var(--fg);
+    border-left-color: var(--line-strong);
+  }
+
+  @media (max-width: 59.99rem) {
+    .toc {
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .toc ol {
+      grid-template-columns: repeat(auto-fill, minmax(9rem, 1fr));
+      border-left: 0;
+    }
+
+    .toc a {
+      padding-left: 0;
+      border-left: 0;
+    }
+  }
+
+  .doc {
+    max-width: 44rem;
+    min-width: 0;
+  }
+
+  .doc-head {
+    padding-bottom: 2rem;
+  }
+
+  h1 {
+    font-size: clamp(2.2rem, 1.6rem + 2.4vw, 3.2rem);
+    font-weight: 800;
+    letter-spacing: -0.035em;
+  }
+
+  .doc-head p {
+    margin-top: 1rem;
+    color: var(--muted);
+    font-size: 1.1rem;
+  }
+
+  section {
+    display: grid;
+    gap: 1rem;
+    padding-block: 2.25rem;
+    border-top: 1px solid var(--line);
+    color: #d4d4d8;
+    font-size: 1.025rem;
+  }
+
+  h2 {
+    font-size: 1.5rem;
+    font-weight: 750;
+    letter-spacing: -0.02em;
+    color: var(--fg);
+    margin-bottom: 0.25rem;
+  }
+
+  strong {
+    color: var(--fg);
+    font-weight: 600;
+  }
+
+  ul {
+    margin: 0;
+    padding-left: 1.1rem;
+    display: grid;
+    gap: 0.4rem;
+  }
+
+  ul li::marker {
+    color: var(--faint);
+  }
+
+  .note {
+    display: flex;
+    gap: 0.75rem;
+    align-items: baseline;
+    padding: 0.9rem 1rem;
+    background: var(--raised);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    color: var(--fg);
+  }
+
+  .note .dot {
+    background: var(--requested);
+    transform: translateY(-0.1em);
+  }
+
+  .steps {
+    margin: 0;
+    display: grid;
+  }
+
+  .steps > div {
+    display: grid;
+    gap: 0.2rem 1.5rem;
+    padding-block: 0.9rem;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .steps > div:first-child {
+    padding-top: 0;
+  }
+
+  @media (min-width: 40rem) {
+    .steps > div {
+      grid-template-columns: 9rem 1fr;
+    }
+  }
+
+  dt {
+    font-weight: 650;
+    color: var(--fg);
+  }
+
+  dd {
+    margin: 0;
+  }
+
+  .table {
+    overflow-x: auto;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.925rem;
+  }
+
+  th,
+  td {
+    text-align: left;
+    vertical-align: top;
+    padding: 0.7rem 0.9rem;
+    border-bottom: 1px solid var(--line);
+  }
+
+  tbody tr:last-child td {
+    border-bottom: 0;
+  }
+
+  th {
+    font-weight: 600;
+    color: var(--muted);
+    background: var(--raised);
+  }
+
+  td:nth-child(2) {
+    color: var(--muted);
+  }
+</style>

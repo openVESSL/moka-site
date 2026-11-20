@@ -1,0 +1,137 @@
+---
+import "../styles/global.css";
+import GitHubMark from "../components/GitHubMark.astro";
+import { ORG, REPO } from "../consts";
+
+interface Props {
+  title: string;
+  description: string;
+  page?: "home" | "docs";
+  /** false for pages search engines should skip, like 404 */
+  indexed?: boolean;
+}
+
+const { title, description, page, indexed = true } = Astro.props;
+const canonical = new URL(Astro.url.pathname.replace(/(index)?\.html$/, ""), Astro.site);
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    {indexed ? <link rel="canonical" href={canonical} /> : <meta name="robots" content="noindex" />}
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <meta name="theme-color" content="#0c0c0e" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+  </head>
+  <body>
+    <a class="skip" href="#content">Skip to content</a>
+    <header class="top">
+      <div class="wrap bar">
+        <a class="name" href="/" aria-current={page === "home" ? "page" : undefined}>Moka</a>
+        <nav aria-label="Main">
+          <a class="nav-link" href="/docs" aria-current={page === "docs" ? "page" : undefined}>Docs</a>
+          <a class="btn btn-quiet btn-small" href={REPO}><GitHubMark /> GitHub</a>
+        </nav>
+      </div>
+    </header>
+
+    <main id="content">
+      <slot />
+    </main>
+
+    <footer class="foot">
+      <div class="wrap foot-grid">
+        <p>
+          Moka is free software under the
+          <a href={`${REPO}/blob/main/LICENSE`}>GNU GPL v3</a>, published by <a href={ORG}>OpenVessl</a>.
+        </p>
+        <p class="fine">
+          Moka uses the TMDB API but is not endorsed or certified by TMDB. Music metadata comes from MusicBrainz.
+        </p>
+      </div>
+    </footer>
+  </body>
+</html>
+
+<style>
+  .top {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    background: rgb(12 12 14 / 0.92);
+    border-bottom: 1px solid var(--line);
+  }
+
+  @supports (backdrop-filter: blur(1px)) {
+    .top {
+      background: rgb(12 12 14 / 0.78);
+      backdrop-filter: blur(12px) saturate(1.2);
+    }
+  }
+
+  .bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 4rem;
+  }
+
+  .name {
+    font-size: 1.3rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    color: var(--fg);
+    text-decoration: none;
+  }
+
+  nav {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .nav-link {
+    padding: 0.4rem 0.7rem;
+    border-radius: 8px;
+    color: var(--muted);
+    font-weight: 500;
+    text-decoration: none;
+  }
+
+  .nav-link:hover,
+  .nav-link[aria-current="page"] {
+    color: var(--fg);
+  }
+
+  .foot {
+    margin-top: clamp(4rem, 10vw, 7rem);
+    border-top: 1px solid var(--line);
+    padding-block: 2rem 2.5rem;
+    color: var(--muted);
+    font-size: 0.875rem;
+  }
+
+  .foot-grid {
+    display: grid;
+    gap: 0.6rem;
+  }
+
+  .fine {
+    color: var(--faint);
+  }
+
+  .foot a {
+    color: var(--fg);
+  }
+
+  .foot a:hover {
+    color: var(--accent);
+  }
+</style>

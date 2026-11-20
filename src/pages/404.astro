@@ -1,0 +1,39 @@
+---
+import Base from "../layouts/Base.astro";
+---
+
+<Base title="Not found · Moka" description="This page does not exist." indexed={false}>
+  <section class="wrap lost">
+    <h1>Nothing here.</h1>
+    <p>This page does not exist, or it moved.</p>
+    <div class="actions">
+      <a class="btn btn-primary" href="/">Go to the start</a>
+      <a class="btn btn-quiet" href="/docs">Read the docs</a>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .lost {
+    padding-block: clamp(4rem, 12vw, 8rem);
+  }
+
+  h1 {
+    font-size: clamp(2.4rem, 1.6rem + 3vw, 3.6rem);
+    font-weight: 800;
+    letter-spacing: -0.035em;
+  }
+
+  p {
+    margin-top: 1rem;
+    color: var(--muted);
+    font-size: 1.1rem;
+  }
+
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 2rem;
+  }
+</style>

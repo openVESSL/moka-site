@@ -1,0 +1,309 @@
+---
+import Base from "../layouts/Base.astro";
+import GitHubMark from "../components/GitHubMark.astro";
+import Journey from "../components/Journey.astro";
+import { ISSUES, REPO } from "../consts";
+
+const neighbours = [
+  {
+    name: "Jellyfin",
+    text: "Keep watching there. After each import Moka refreshes just that folder, and it brings back what people watched.",
+  },
+  {
+    name: "Radarr",
+    text: "Moka can sit in front of it: approved requests go to Radarr, and every film Radarr has shows up in Moka to watch.",
+  },
+  {
+    name: "Prowlarr",
+    text: "Bring in the indexers you already set up there in one step, or let Prowlarr keep them in sync.",
+  },
+  {
+    name: "qBittorrent, Transmission, SABnzbd",
+    text: "Your download client stays yours. Moka adds downloads under their own category and follows them to the end.",
+  },
+  {
+    name: "Request and subtitle apps",
+    text: "Apps that talk to Radarr or Sonarr can connect to Moka with an API key and get the usual webhooks after an import.",
+  },
+];
+
+const today = [
+  "Films and shows, from request to play",
+  "Whole seasons, and new episodes as they air",
+  "Release choice with quality profiles, explained for every release",
+  "Playback in the browser, converted with FFmpeg only when needed",
+  "Subtitles inside or next to the file, styled ones included",
+  "Existing film and show folders brought in as they are",
+];
+
+const next = [
+  "Music downloads and playback (catalog and album requests work)",
+  "Ebooks and audiobooks",
+  "An API that existing phone and TV apps can connect to",
+  "A first release",
+];
+---
+
+<Base
+  title="Moka: your own media server, from request to play"
+  description="Moka is a self-hosted media server for films, shows and music. Request a title, and it is found, downloaded, filed and ready to play in the browser."
+  page="home"
+>
+  <section class="wrap hero">
+    <div class="pitch">
+      <h1>From request to play, on your own server.</h1>
+      <p class="lede">
+        Moka is a self-hosted media server for films, shows and music. Ask for a title and it is found through your
+        indexers, downloaded by your client, filed in your library and ready to play in the browser.
+      </p>
+      <p class="preview"><span class="dot" aria-hidden="true"></span> Development preview: it runs, it is unfinished, and it changes often.</p>
+      <div class="actions">
+        <a class="btn btn-primary" href={REPO}><GitHubMark /> View on GitHub</a>
+        <a class="btn btn-quiet" href="/docs">Read the docs</a>
+      </div>
+    </div>
+    <Journey />
+  </section>
+
+  <section class="wrap band" aria-labelledby="what">
+    <h2 id="what">One program, one path</h2>
+    <div class="prose">
+      <p>
+        Moka covers the whole way in one place: a catalog to browse, requests with approval, release search with
+        quality profiles, downloads through your own client, import into tidy folders, and a player in the browser with
+        subtitles.
+      </p>
+      <p>
+        Each title is one thing that moves through visible states, so the request, the download and the file you play
+        are the same object seen at different moments. When Moka decides something for you, it says why: which release
+        it took, why it skipped the others, why a video is being converted.
+      </p>
+      <p>Moka ships with no content sources. You connect your own download client and indexers.</p>
+    </div>
+  </section>
+
+  <section class="wrap band" aria-labelledby="why">
+    <h2 id="why">Why it exists</h2>
+    <div class="prose">
+      <p>
+        Moka started as a personal project. I wanted my own setup to feel like one program instead of several, and to
+        understand every choice it made.
+      </p>
+      <p>
+        It is still personal, but I would rather build it in the open than finish it alone. While it is in development
+        the code is public, so you can follow along, run it, and tell me where it falls short. Ideas, criticism, bug
+        reports and questions are all welcome in the <a href={ISSUES}>issues</a>.
+      </p>
+    </div>
+  </section>
+
+  <section class="wrap band" aria-labelledby="with">
+    <h2 id="with">Works with what you already run</h2>
+    <div>
+      <p class="prose-lead">
+        Moka is not here to replace your stack. It can sit next to it, take over one part, or simply watch. And you can
+        stop using it whenever you like: the library is plain folders with readable names, and imports hardlink or
+        copy, never move.
+      </p>
+      <dl class="neighbours">
+        {
+          neighbours.map((n) => (
+            <div>
+              <dt>{n.name}</dt>
+              <dd>{n.text}</dd>
+            </div>
+          ))
+        }
+      </dl>
+    </div>
+  </section>
+
+  <section class="wrap band" aria-labelledby="status">
+    <h2 id="status">Where it stands</h2>
+    <div class="status">
+      <div>
+        <h3>Works today</h3>
+        <ul>{today.map((t) => <li><span class="dot ok" aria-hidden="true"></span>{t}</li>)}</ul>
+      </div>
+      <div>
+        <h3>Coming next</h3>
+        <ul>{next.map((t) => <li><span class="dot soon" aria-hidden="true"></span>{t}</li>)}</ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="wrap close" aria-labelledby="try">
+    <h2 id="try">Try it, then tell me what broke.</h2>
+    <div class="actions">
+      <a class="btn btn-primary" href="/docs">Install it</a>
+      <a class="btn btn-quiet" href={ISSUES}>Open an issue</a>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .hero {
+    display: grid;
+    gap: clamp(2.5rem, 6vw, 4.5rem);
+    align-items: center;
+    padding-block: clamp(3rem, 9vw, 6.5rem) clamp(3.5rem, 8vw, 6rem);
+  }
+
+  @media (min-width: 60rem) {
+    .hero {
+      grid-template-columns: 1.15fr 0.85fr;
+    }
+  }
+
+  h1 {
+    font-size: clamp(2.6rem, 1.5rem + 4.4vw, 4.6rem);
+    font-weight: 800;
+    letter-spacing: -0.035em;
+    line-height: 1.02;
+    max-width: 14ch;
+  }
+
+  .lede {
+    margin-top: 1.5rem;
+    max-width: 36rem;
+    font-size: clamp(1.1rem, 1rem + 0.35vw, 1.25rem);
+    color: var(--muted);
+    line-height: 1.55;
+  }
+
+  .preview {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-top: 1.5rem;
+    font-size: 0.95rem;
+    color: var(--fg);
+  }
+
+  .preview .dot {
+    background: var(--requested);
+  }
+
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 2rem;
+  }
+
+  .band {
+    display: grid;
+    gap: 1rem 3rem;
+    padding-block: clamp(2.5rem, 6vw, 4rem);
+    border-top: 1px solid var(--line);
+  }
+
+  @media (min-width: 52rem) {
+    .band {
+      grid-template-columns: 15rem 1fr;
+    }
+  }
+
+  h2 {
+    font-size: clamp(1.45rem, 1.2rem + 0.8vw, 1.8rem);
+    font-weight: 750;
+    letter-spacing: -0.02em;
+  }
+
+  .prose,
+  .prose-lead {
+    max-width: 40rem;
+    font-size: 1.075rem;
+    color: #d4d4d8;
+  }
+
+  .prose {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .neighbours {
+    margin: 2rem 0 0;
+    display: grid;
+    border-top: 1px solid var(--line);
+  }
+
+  .neighbours > div {
+    display: grid;
+    gap: 0.25rem 2rem;
+    padding-block: 1rem;
+    border-bottom: 1px solid var(--line);
+  }
+
+  @media (min-width: 40rem) {
+    .neighbours > div {
+      grid-template-columns: 14rem 1fr;
+    }
+  }
+
+  dt {
+    font-weight: 650;
+  }
+
+  dd {
+    margin: 0;
+    color: var(--muted);
+    max-width: 38rem;
+  }
+
+  .status {
+    display: grid;
+    gap: 2rem 3rem;
+  }
+
+  @media (min-width: 40rem) {
+    .status {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  h3 {
+    font-size: 1rem;
+    font-weight: 650;
+    color: var(--muted);
+    margin-bottom: 0.75rem;
+  }
+
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 0.6rem;
+  }
+
+  li {
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+  }
+
+  li .dot {
+    transform: translateY(-0.15em);
+  }
+
+  .ok {
+    background: var(--available);
+  }
+
+  .soon {
+    background: transparent;
+    box-shadow: inset 0 0 0 1.5px var(--faint);
+  }
+
+  .close {
+    padding-block: clamp(3rem, 8vw, 5rem) 0;
+    border-top: 1px solid var(--line);
+  }
+
+  .close h2 {
+    font-size: clamp(1.8rem, 1.3rem + 2vw, 2.6rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+  }
+</style>

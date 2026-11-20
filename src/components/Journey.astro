@@ -1,0 +1,161 @@
+---
+// One title's way through Moka, with the state names and hints the app shows.
+const steps = [
+  { state: "Requested", tone: "requested", at: "20:14", hint: "Waiting for someone to approve it." },
+  { state: "Wanted", tone: "wanted", at: "20:16", hint: "Approved. Looking for a release that fits your quality profile." },
+  { state: "Searching", tone: "working", at: "20:16", hint: "Asking your indexers right now." },
+  { state: "Sent to client", tone: "working", at: "20:17", hint: "A release was picked and handed to your download client." },
+  { state: "Downloading", tone: "working", at: "20:17", hint: "Your download client is fetching it." },
+  { state: "Importing", tone: "working", at: "20:29", hint: "Download finished. Adding it to your library." },
+  { state: "In library", tone: "available", at: "20:29", hint: "Ready to play." },
+];
+---
+
+<figure class="journey">
+  <figcaption class="head">
+    <span class="film">Sintel <span class="year">2010</span></span>
+    <span class="who">Example request</span>
+  </figcaption>
+  <ol class="steps">
+    {
+      steps.map((s, i) => (
+        <li style={`--i:${i}`}>
+          <span class={`dot tone-${s.tone}`} aria-hidden="true" />
+          <span class="state">{s.state}</span>
+          <time class="at">{s.at}</time>
+          <span class="hint">{s.hint}</span>
+        </li>
+      ))
+    }
+  </ol>
+</figure>
+
+<style>
+  .journey {
+    margin: 0;
+    background: var(--raised);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    box-shadow: 0 24px 60px -30px rgb(0 0 0 / 0.9);
+    overflow: hidden;
+  }
+
+  .head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .film {
+    font-weight: 700;
+    font-size: 1.05rem;
+  }
+
+  .year {
+    margin-left: 0.35rem;
+    color: var(--faint);
+    font-weight: 500;
+    font-family: var(--mono);
+    font-size: 0.85rem;
+  }
+
+  .who {
+    color: var(--faint);
+    font-size: 0.85rem;
+  }
+
+  .steps {
+    position: relative;
+    list-style: none;
+    margin: 0;
+    padding: 0.75rem 1.25rem 1rem;
+  }
+
+  /* the track that joins the dots */
+  .steps::before {
+    content: "";
+    position: absolute;
+    left: calc(1.25rem + 0.225rem - 0.5px);
+    top: 1.85rem;
+    bottom: 2.1rem;
+    width: 1px;
+    background: var(--line-strong);
+  }
+
+  li {
+    position: relative;
+    display: grid;
+    grid-template-columns: 0.45rem 1fr auto;
+    column-gap: 0.9rem;
+    align-items: center;
+    padding-block: 0.45rem;
+  }
+
+  .dot {
+    position: relative;
+    z-index: 1;
+    box-shadow: 0 0 0 4px var(--raised);
+  }
+
+  .tone-requested {
+    background: var(--requested);
+  }
+  .tone-wanted {
+    background: var(--wanted);
+  }
+  .tone-working {
+    background: var(--working);
+  }
+  .tone-available {
+    background: var(--available);
+  }
+
+  .state {
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+
+  .at {
+    font-family: var(--mono);
+    font-size: 0.8rem;
+    color: var(--faint);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .hint {
+    grid-column: 2 / -1;
+    color: var(--muted);
+    font-size: 0.875rem;
+    line-height: 1.45;
+  }
+
+  /* Played once on load: each state lights up in turn, the way a request moves. */
+  @media (prefers-reduced-motion: no-preference) {
+    .dot {
+      animation: light 0.5s var(--ease) both;
+      animation-delay: calc(0.35s + var(--i) * 0.22s);
+    }
+
+    .state,
+    .hint {
+      animation: settle 0.6s var(--ease) both;
+      animation-delay: calc(0.3s + var(--i) * 0.22s);
+    }
+  }
+
+  @keyframes light {
+    from {
+      background: var(--line-strong);
+      transform: scale(0.6);
+    }
+  }
+
+  @keyframes settle {
+    from {
+      color: var(--faint);
+    }
+  }
+</style>
