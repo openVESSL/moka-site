@@ -1,0 +1,17 @@
+{
+  "name": "moka-site",
+  "private": true,
+  "type": "module",
+  "license": "GPL-3.0-only",
+  "packageManager": "pnpm@12.22.0",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview"
+  },
+  "dependencies": {
+    "@fontsource-variable/red-hat-mono": "^5.2.0",
+    "@fontsource-variable/sofia-sans": "^5.2.0",
+    "astro": "^7.4.13"
+  }
+}
