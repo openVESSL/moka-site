@@ -22,6 +22,14 @@ const neighbours = [
     text: "Your download client stays yours. Moka adds downloads under their own category and follows them to the end.",
   },
   {
+    name: "Anchorr",
+    text: "A Discord bot: people search and request from your server in their own name, and hear when their films and shows are ready.",
+  },
+  {
+    name: "Jellyfin apps",
+    text: "Phone and TV apps made for Jellyfin can connect to Moka to browse and play films, shows and music.",
+  },
+  {
     name: "Request and subtitle apps",
     text: "Apps that talk to Radarr or Sonarr can connect to Moka with an API key and get the usual webhooks after an import.",
   },
@@ -29,7 +37,10 @@ const neighbours = [
 
 const today = [
   "Films and shows, from request to play",
-  "Whole seasons, and new episodes as they air",
+  "Whole seasons or single ones, and new episodes as they air",
+  "Music: album requests, downloads by audio format, playback",
+  "Ebooks and audiobooks, with a reader and audiobooks that resume",
+  "Requests per person: what they may ask for, their own limits",
   "Release choice with quality profiles, explained for every release",
   "Playback in the browser, converted with FFmpeg only when needed",
   "Subtitles inside or next to the file, styled ones included",
@@ -37,26 +48,25 @@ const today = [
 ];
 
 const next = [
-  "Music downloads and playback (catalog and album requests work)",
-  "Ebooks and audiobooks",
-  "An API that existing phone and TV apps can connect to",
-  "A first release",
+  "More testing with real phone and TV apps, then books there",
+  "A new interface",
+  "1.0",
 ];
 ---
 
 <Base
   title="Moka: your own media server, from request to play"
-  description="Moka is a self-hosted media server for films, shows and music. Request a title, and it is found, downloaded, filed and ready to play in the browser."
+  description="Moka is a self-hosted media server for films, shows, music and books. Request a title, and it is found, downloaded, filed and ready to play in the browser."
   page="home"
 >
   <section class="wrap hero">
     <div class="pitch">
       <h1>From request to play, on your own server.</h1>
       <p class="lede">
-        Moka is a self-hosted media server for films, shows and music. Ask for a title and it is found through your
+        Moka is a self-hosted media server for films, shows, music and books. Ask for a title and it is found through your
         indexers, downloaded by your client, filed in your library and ready to play in the browser.
       </p>
-      <p class="preview"><span class="dot" aria-hidden="true"></span> Development preview: it runs, it is unfinished, and it changes often.</p>
+      <p class="preview"><span class="dot" aria-hidden="true"></span> Development preview, version 0.2: it runs, it is unfinished, and it changes often.</p>
       <div class="actions">
         <a class="btn btn-primary" href={REPO}><GitHubMark /> View on GitHub</a>
         <a class="btn btn-quiet" href="/docs">Read the docs</a>
